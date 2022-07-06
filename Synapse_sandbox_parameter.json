@@ -1,0 +1,101 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "value": "arvindworkspace"
+        },
+        "location": {
+            "value": "canadacentral"
+        },
+        "defaultDataLakeStorageAccountName": {
+            "value": "arvindsynapsestorage"
+        },
+        "defaultDataLakeStorageFilesystemName": {
+            "value": "arvindfilesystem"
+        },
+        "sqlAdministratorLogin": {
+            "value": "sqladminuser"
+        },
+        "sqlAdministratorLoginPassword": {
+            "value": "P@ssw0rd"
+        },
+        "setWorkspaceIdentityRbacOnStorageAccount": {
+            "value": false
+        },
+        "createManagedPrivateEndpoint": {
+            "value": false
+        },
+        "defaultAdlsGen2AccountResourceId": {
+            "value": "/subscriptions/18750f99-52f4-4ff4-b656-bb42d775a9ec/resourceGroups/Arvind_test2/providers/Microsoft.Storage/storageAccounts/arvindsynapsestorage"
+        },
+        "azureADOnlyAuthentication": {
+            "value": false
+        },
+        "allowAllConnections": {
+            "value": true
+        },
+        "managedVirtualNetwork": {
+            "value": ""
+        },
+        "tagValues": {
+            "value": {
+                "Project": "ISD Synapse Sandbox"
+            }
+        },
+        "storageSubscriptionID": {
+            "value": "18750f99-52f4-4ff4-b656-bb42d775a9ec"
+        },
+        "storageResourceGroupName": {
+            "value": "Arvind_test2"
+        },
+        "storageLocation": {
+            "value": "canadacentral"
+        },
+        "storageRoleUniqueId": {
+            "value": "7e12a6bb-9510-4b66-b879-d322c0680018"
+        },
+        "isNewStorageAccount": {
+            "value": true
+        },
+        "isNewFileSystemOnly": {
+            "value": false
+        },
+        "adlaResourceId": {
+            "value": ""
+        },
+        "managedResourceGroupName": {
+            "value": "Arvind_Synapse_ManagedRG"
+        },
+        "storageAccessTier": {
+            "value": "Hot"
+        },
+        "storageAccountType": {
+            "value": "Standard_RAGRS"
+        },
+        "storageSupportsHttpsTrafficOnly": {
+            "value": true
+        },
+        "storageKind": {
+            "value": "StorageV2"
+        },
+        "minimumTlsVersion": {
+            "value": "TLS1_2"
+        },
+        "storageIsHnsEnabled": {
+            "value": true
+        },
+        "userObjectId": {
+            "value": "22a41615-a0a6-4e6c-8aaa-45204b6e9546"
+        },
+        "setSbdcRbacOnStorageAccount": {
+            "value": false
+        },
+        "setWorkspaceMsiByPassOnStorageAccount": {
+            "value": false
+        },
+        "workspaceStorageAccountProperties": {
+            "value": {}
+        }
+    }
+}
