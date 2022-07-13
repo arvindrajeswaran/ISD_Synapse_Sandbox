@@ -8,10 +8,10 @@
         "location": {
             "value": "canadacentral"
         },
-        "defaultDataLakeStorageAccountName": {
+        "DataLakeStorageAccountName": {
             "value": "arvindsynapsestorage"
         },
-        "defaultDataLakeStorageFilesystemName": {
+        "DataLakeStorageFilesystemName": {
             "value": "arvindfilesystem"
         },
         "sqlAdministratorLogin": {

@@ -3,7 +3,7 @@ Connect-AzAccount -Tenant "368d700f-2d72-4c4a-a703-1dee96ebc2c9" -Subscription "
 #clean the resources
 #Remove-AzResourceGroup -Name "Arvind_Synapse_RG"
 
-Get-AzContext
+Get-AzContext                                     
 
 #Create new resource group
 New-AzResourceGroup -Name Arvind_Synapse_RG -Location "Canada Central" -Tag @{Project="ISD Synapse Sandbox"}
