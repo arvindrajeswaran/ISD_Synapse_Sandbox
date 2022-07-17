@@ -34,7 +34,6 @@
     "variables": {
         "storageBlobDataContributorRoleID": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
         "defaultDataLakeStorageAccountUrl": "[concat('https://', parameters('DataLakeStorageAccountName'), '.dfs.core.windows.net')]",
-        "setWorkspaceIdentityRbacOnStorageAccount": "false",
         "createManagedPrivateEndpoint": false,
         "azureADOnlyAuthentication": false,
         "allowAllConnections": true,
@@ -103,7 +102,7 @@
             }
         },
         {
-            "condition": "[variables('setWorkspaceIdentityRbacOnStorageAccount')]",
+            "condition": false,
             "apiVersion": "2019-05-01",
             "name": "StorageRoleDeploymentResource",
             "type": "Microsoft.Resources/deployments",
