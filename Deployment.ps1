@@ -12,3 +12,6 @@ New-AzResourceGroup -Name Arvind_Synapse_RG -Location "Canada Central" -Tag @{Pr
 New-AzResourceGroupDeployment -ResourceGroupName 'Arvind_Synapse_RG' `
   -TemplateFile 'C:\Visual Studio\ISD_Synapse_Sandbox\Synapse_sandbox_template.json' `
   -TemplateParameterFile 'C:\Visual Studio\ISD_Synapse_Sandbox\Synapse_sandbox_parameter.json'
+
+#remove resource group
+#Remove-AzResourceGroup -Name "Arvind_test"

@@ -21,6 +21,9 @@
         "sqlAdministratorLoginPassword": {
             "type": "secureString",
             "defaultValue": ""
+        },
+        "sqlDedicatedPoolName": {
+            "type": "string"
         }
        /* "defaultAdlsGen2AccountResourceId": {
             "type": "string",
@@ -52,7 +55,10 @@
         "minimumTlsVersion": "TLS1_2",
         "storageIsHnsEnabled": "true",
         "setSbdcRbacOnStorageAccount": false,
-        "setWorkspaceMsiByPassOnStorageAccount": false
+        "setWorkspaceMsiByPassOnStorageAccount": false,
+        "sku": "DW100c",
+        "collation": "SQL_Latin1_General_CP1_CI_AS",
+        "metadataSync": false
     },
     "resources": [
         {
@@ -192,7 +198,10 @@
                 "name": "[variables('storageAccountType')]"
             },
             "kind": "[variables('storageKind')]",
-            "tags": {},
+            "tags": {
+                "Environment": "Demo",
+                "Project": "Tutorial"
+            },
             "resources": [
                 {
                     "condition": "[variables('isNewStorageAccount')]",
@@ -234,6 +243,41 @@
                     ]
                 }
             }
+        },
+        {
+            "type": "Microsoft.Synapse/workspaces/sqlPools",
+            "apiVersion": "2021-06-01",
+            "location": "[parameters('location')]",
+            "tags": {
+                "Environment": "Demo",
+                "Project": "Tutorial"
+            },
+            "name": "[concat(parameters('name'), '/', parameters('sqlDedicatedPoolName'))]",
+            "sku": {
+                "name": "[variables('sku')]"
+            },
+            "properties": {
+                "createMode": "Default",
+                "collation": "[variables('collation')]"
+            },
+            "dependsOn": [
+            "[concat('Microsoft.Synapse/workspaces/', parameters('name'))]"
+            ],
+            "resources": [
+                {
+                    "condition": "[variables('metadataSync')]",
+                    "apiVersion": "2021-06-01",
+                    "dependsOn": [
+                        "[concat('Microsoft.Synapse/workspaces/', parameters('name'), '/sqlPools/', parameters('sqlDedicatedPoolName'))]"
+                    ],
+                    "location": "[parameters('location')]",
+                    "name": "config",
+                    "properties": {
+                        "Enabled": "[variables('metadataSync')]"
+                    },
+                    "type": "metadataSync"
+                }
+            ]
         }
     ],
     "outputs": {}
