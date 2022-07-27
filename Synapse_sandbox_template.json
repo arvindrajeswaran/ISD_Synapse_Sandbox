@@ -45,7 +45,7 @@
         "storageResourceGroupName": "[resourceGroup().name]",
         "storageLocation": "[resourceGroup().location]",
         "storageRoleUniqueId": "[Guid(concat(resourceGroup().id),parameters('DataLakeStorageAccountName'))]",
-        "isNewStorageAccount": false,
+        "isNewStorageAccount": true,
         "isNewFileSystemOnly": false,
         "managedResourceGroupName": "[concat(resourceGroup().location, '_ManagedRG')]",
         "storageAccessTier": "Hot",
@@ -55,7 +55,6 @@
         "minimumTlsVersion": "TLS1_2",
         "storageIsHnsEnabled": "true",
         "setSbdcRbacOnStorageAccount": false,
-        "setWorkspaceMsiByPassOnStorageAccount": false,
         "sku": "DW100c",
         "collation": "SQL_Latin1_General_CP1_CI_AS",
         "metadataSync": false
@@ -105,81 +104,6 @@
             "tags": {
                 "Environment": "Demo",
                 "Project": "Tutorial"
-            }
-        },
-        {
-            "condition": false,
-            "apiVersion": "2019-05-01",
-            "name": "StorageRoleDeploymentResource",
-            "type": "Microsoft.Resources/deployments",
-            "subscriptionId": "[variables('storageSubscriptionID')]",
-            "resourceGroup": "[variables('storageResourceGroupName')]",
-            "dependsOn": [
-                "[concat('Microsoft.Synapse/workspaces/', parameters('name'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "variables": {},
-                    "resources": [
-                        {
-                            "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
-                            "apiVersion": "2018-09-01-preview",
-                            "name": "[concat(parameters('DataLakeStorageAccountName'), '/Microsoft.Authorization/',  guid(concat(resourceGroup().id, '/', variables('storageBlobDataContributorRoleID'), '/', parameters('name'), '/', variables('storageRoleUniqueId'))))]",
-                            "location": "[variables('storageLocation')]",
-                            "properties": {
-                                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('storageBlobDataContributorRoleID'))]",
-                                "principalId": "[reference(concat('Microsoft.Synapse/workspaces/', parameters('name')), '2021-06-01', 'Full').identity.principalId]",
-                                "principalType": "ServicePrincipal"
-                            }
-                        },
-                        {
-                            "condition": "[variables('setSbdcRbacOnStorageAccount')]",
-                            "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
-                            "apiVersion": "2018-09-01-preview",
-                            "name": "[concat(parameters('DataLakeStorageAccountName'), '/Microsoft.Authorization/',  guid(concat(resourceGroup().id, '/', variables('storageBlobDataContributorRoleID'), '/', parameters('name'), '/', variables('storageRoleUniqueId'))))]",
-                            "properties": {
-                                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('storageBlobDataContributorRoleID'))]",
-                                /*"principalId": "[parameters('userObjectId')]",
-                                "principalType": "User" */
-                                "principalId": "[reference(resourceId('Microsoft.Synapse/workspaces', parameters('name')), '2019-06-01-preview', 'Full').identity.principalId]",
-                                "principalType": "ServicePrincipal"
-                            }
-                        }
-                    ]
-                }
-            }
-        },
-        {
-            "condition": "[variables('setWorkspaceMsiByPassOnStorageAccount')]",
-            "apiVersion": "2019-05-01",
-            "name": "UpdateStorageAccountNetworkingAcls",
-            "type": "Microsoft.Resources/deployments",
-            "subscriptionId": "[variables('storageSubscriptionID')]",
-            "resourceGroup": "[variables('storageResourceGroupName')]",
-            "dependsOn": [
-                "[concat('Microsoft.Synapse/workspaces/', parameters('name'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "variables": {},
-                    "resources": [
-                        {
-                            "type": "Microsoft.Storage/storageAccounts",
-                            "apiVersion": "2021-01-01",
-                            "location": "[variables('storageLocation')]",
-                            "name": "[parameters('DataLakeStorageAccountName')]"
-                            //"properties": "[parameters('workspaceStorageAccountProperties')]"
-                        }
-                    ]
-                }
             }
         },
         {
