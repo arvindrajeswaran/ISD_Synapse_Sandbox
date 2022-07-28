@@ -147,8 +147,7 @@
                 }
             ]
         },
-        /*{
-            "condition": "[variables('isNewFileSystemOnly')]",
+        {
             "apiVersion": "2019-05-01",
             "name": "[variables('DataLakeStorageFilesystemName')]",
             "type": "Microsoft.Resources/deployments",
@@ -173,7 +172,7 @@
                     ]
                 }
             }
-        },*/
+        },
         //Adding Role Assignment for Storage Contribution Role
     {
       "scope": "[concat('Microsoft.Storage/storageAccounts/', variables('uniqueSAName'))]",
