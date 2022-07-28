@@ -15,3 +15,10 @@ New-AzResourceGroupDeployment -ResourceGroupName 'Arvind_Synapse_RG' `
 
 #remove resource group
 #Remove-AzResourceGroup -Name "Arvind_test"
+
+$url = "https://raw.githubusercontent.com/arvindrajeswaran/ISD_Synapse_Sandbox/main/Synapse_sandbox_template.json"
+[uri]::EscapeDataString($url)
+
+https%3A%2F%2Fraw.githubusercontent.com%2Farvindrajeswaran%2FISD_Synapse_Sandbox%2Fmain%2FSynapse_sandbox_template.json
+
+https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Farvindrajeswaran%2FISD_Synapse_Sandbox%2Fmain%2FSynapse_sandbox_template.json

@@ -3,18 +3,21 @@
     "contentVersion": "1.0.0.1",
     "parameters": {
         "name": {
-            "type": "string"
+            "type": "string",
+            "minlength": 3,
+            "maxLength": 8 
         },
         "location": {
             "type": "string",
             "defaultValue": "[resourceGroup().location]"
         },
-        "DataLakeStorageAccountName": {
+        /*"DataLakeStorageAccountName": {
             "type": "string"
         },
         "DataLakeStorageFilesystemName": {
             "type": "string"
         },
+        */
         "sqlAdministratorLogin": {
             "type": "string"
         },
@@ -35,16 +38,14 @@
         }*/
     },
     "variables": {
-        "storageBlobDataContributorRoleID": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
-        "defaultDataLakeStorageAccountUrl": "[concat('https://', parameters('DataLakeStorageAccountName'), '.dfs.core.windows.net')]",
+        //"storageBlobDataContributorRoleID": "ba92f5b4-2d11-453d-a403-e96b0029c9fe",
+        "defaultDataLakeStorageAccountUrl": "[concat('https://', variables('uniqueSAName'), '.dfs.core.windows.net')]",
         "createManagedPrivateEndpoint": false,
         "azureADOnlyAuthentication": false,
         "allowAllConnections": true,
         "managedVirtualNetwork": "default",
-        "storageSubscriptionID": "[subscription().subscriptionId]",
-        "storageResourceGroupName": "[resourceGroup().name]",
         "storageLocation": "[resourceGroup().location]",
-        "storageRoleUniqueId": "[Guid(concat(resourceGroup().id),parameters('DataLakeStorageAccountName'))]",
+        //"storageRoleUniqueId": "[Guid(concat(resourceGroup().id),parameters('uniqueSAName'))]",
         "isNewStorageAccount": true,
         "isNewFileSystemOnly": false,
         "managedResourceGroupName": "[concat(resourceGroup().name, '_ManagedRG')]",
@@ -54,10 +55,12 @@
         "storageKind": "StorageV2",
         "minimumTlsVersion": "TLS1_2",
         "storageIsHnsEnabled": "true",
-        "setSbdcRbacOnStorageAccount": false,
+       // "setSbdcRbacOnStorageAccount": false,
         "sku": "DW100c",
         "collation": "SQL_Latin1_General_CP1_CI_AS",
-        "metadataSync": false
+        "metadataSync": false,
+        "uniqueSAName": "[concat(parameters('name'),'-', uniqueString(resourceGroup().id))]",
+        "DataLakeStorageFilesystemName": "[concat(parameters('name'),'-fs')]"
     },
     "resources": [
         {
@@ -71,7 +74,7 @@
             "properties": {
                 "defaultDataLakeStorage": {
                     "accountUrl": "[variables('defaultDataLakeStorageAccountUrl')]",
-                    "filesystem": "[parameters('DataLakeStorageFilesystemName')]",
+                    "filesystem": "[variables('DataLakeStorageFilesystemName')]",
                    // "resourceId": "[parameters('defaultAdlsGen2AccountResourceId')]",
                     "createManagedPrivateEndpoint": "[variables('createManagedPrivateEndpoint')]"
                 },
@@ -98,8 +101,8 @@
                 }
             ],
             "dependsOn": [
-                "[concat('Microsoft.Storage/storageAccounts/', parameters('DataLakeStorageAccountName'))]",
-                "[concat('Microsoft.Resources/deployments/', parameters('DataLakeStorageFilesystemName'))]"
+                "[concat('Microsoft.Storage/storageAccounts/', variables('uniqueSAName'))]",
+                "[concat('Microsoft.Resources/deployments/', variables('DataLakeStorageFilesystemName'))]"
             ],
             "tags": {
                 "Environment": "Demo",
@@ -109,7 +112,7 @@
         {
             "condition": "[variables('isNewStorageAccount')]",
             "type": "Microsoft.Storage/storageAccounts",
-            "name": "[parameters('DataLakeStorageAccountName')]",
+            "name": "[variables('uniqueSAName')]",
             "apiVersion": "2021-01-01",
             "location": "[variables('storageLocation')]",
             "properties": {
@@ -129,14 +132,14 @@
             "resources": [
                 {
                     "condition": "[variables('isNewStorageAccount')]",
-                    "name": "[concat('default/', parameters('DataLakeStorageFilesystemName'))]",
+                    "name": "[concat('default/', variables('DataLakeStorageFilesystemName'))]",
                     "type": "blobServices/containers",
                     "apiVersion": "2021-01-01",
                     "properties": {
                         "publicAccess": "None"
                     },
                     "dependsOn": [
-                        "[concat('Microsoft.Storage/storageAccounts/', parameters('DataLakeStorageAccountName'))]"
+                        "[concat('Microsoft.Storage/storageAccounts/', variables('uniqueSAName'))]"
                     ]
                 }
             ]
@@ -144,10 +147,10 @@
         {
             "condition": "[variables('isNewFileSystemOnly')]",
             "apiVersion": "2019-05-01",
-            "name": "[parameters('DataLakeStorageFilesystemName')]",
+            "name": "[variables('DataLakeStorageFilesystemName')]",
             "type": "Microsoft.Resources/deployments",
-            "subscriptionId": "[variables('storageSubscriptionID')]",
-            "resourceGroup": "[variables('storageResourceGroupName')]",
+            "subscriptionId": "[subscription().subscriptionId]",
+            "resourceGroup": "[resourceGroup().name]",
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -158,7 +161,7 @@
                     "resources": [
                         {
                             "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-                            "name": "[concat(parameters('DataLakeStorageAccountName'), '/default/', parameters('DataLakeStorageFilesystemName'))]",
+                            "name": "[concat(variables('uniqueSAName'), '/default/', variables('DataLakeStorageFilesystemName'))]",
                             "apiVersion": "2021-01-01",
                             "properties": {
                                 "publicAccess": "None"
@@ -170,10 +173,10 @@
         },
         //Adding Role Assignment for Storage Contribution Role
     {
-      "scope": "[concat('Microsoft.Storage/storageAccounts/', parameters('DataLakeStorageAccountName'))]",
+      "scope": "[concat('Microsoft.Storage/storageAccounts/', variables('uniqueSAName'))]",
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2020-04-01-preview",
-      "name": "Storage Account Role Assingment",
+      "name": "[guid(uniqueString(variables('uniqueSAName')))]",
       "location": "[parameters('location')]",
       "dependsOn": [
         "[parameters('name')]"
