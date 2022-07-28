@@ -47,7 +47,7 @@
         "storageLocation": "[resourceGroup().location]",
         //"storageRoleUniqueId": "[Guid(concat(resourceGroup().id),parameters('uniqueSAName'))]",
         "isNewStorageAccount": true,
-        //"isNewFileSystemOnly": false,
+        "isNewFileSystemOnly": false,
         "managedResourceGroupName": "[concat(resourceGroup().name, '_ManagedRG')]",
         "storageAccessTier": "Hot",
         "storageAccountType": "Standard_RAGRS",
@@ -148,6 +148,7 @@
             ]
         },
         {
+            "condition": "[variables('isNewFileSystemOnly')]",
             "apiVersion": "2019-05-01",
             "name": "[variables('DataLakeStorageFilesystemName')]",
             "type": "Microsoft.Resources/deployments",
