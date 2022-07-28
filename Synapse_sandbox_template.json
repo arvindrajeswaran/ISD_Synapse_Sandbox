@@ -168,52 +168,22 @@
                 }
             }
         },
-        {
-            "condition": true,
-            "apiVersion": "2019-05-01",
-            "name": "StorageRoleDeploymentResource",
-            "type": "Microsoft.Resources/deployments",
-            "subscriptionId": "[variables('storageSubscriptionID')]",
-            "resourceGroup": "[variables('storageResourceGroupName')]",
-            "dependsOn": [
-                "[concat('Microsoft.Synapse/workspaces/', parameters('name'))]"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {},
-                    "variables": {},
-                    "resources": [
-                        {
-                            "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
-                            "apiVersion": "2018-09-01-preview",
-                            "name": "[concat(parameters('DataLakeStorageAccountName'), '/Microsoft.Authorization/',  guid(concat(resourceGroup().id, '/', variables('storageBlobDataContributorRoleID'), '/', parameters('name'), '/', variables('storageRoleUniqueId'))))]",
-                            "location": "[variables('storageLocation')]",
-                            "properties": {
-                                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('storageBlobDataContributorRoleID'))]",
-                                "principalId": "[reference(concat('Microsoft.Synapse/workspaces/', parameters('name')), '2021-06-01', 'Full').identity.principalId]",
-                                "principalType": "ServicePrincipal"
-                            }
-                        },
-                        {
-                            "condition": "[variables('setSbdcRbacOnStorageAccount')]",
-                            "type": "Microsoft.Storage/storageAccounts/providers/roleAssignments",
-                            "apiVersion": "2018-09-01-preview",
-                            "name": "[concat(parameters('DataLakeStorageAccountName'), '/Microsoft.Authorization/',  guid(concat(resourceGroup().id, '/', variables('storageBlobDataContributorRoleID'), '/', parameters('name'), '/', variables('storageRoleUniqueId'))))]",
-                            "properties": {
-                                "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('storageBlobDataContributorRoleID'))]",
-                                /*"principalId": "[parameters('userObjectId')]",
-                                "principalType": "User" */
-                                "principalId": "[reference(resourceId('Microsoft.Synapse/workspaces', parameters('name')), '2019-06-01-preview', 'Full').identity.principalId]",
-                                "principalType": "ServicePrincipal"
-                            }
-                        }
-                    ]
-                }
-            }
-        },
+        //Adding Role Assignment for Storage Contribution Role
+    {
+      "scope": "[concat('Microsoft.Storage/storageAccounts/', parameters('DataLakeStorageAccountName'))]",
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2020-04-01-preview",
+      "name": "Storage Account Role Assingment",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[parameters('name')]"
+      ],
+      "properties": {
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
+        "principalId": "[reference(resourceId('Microsoft.Synapse/workspaces', parameters('name')), '2019-06-01-preview', 'Full').identity.principalId]",
+        "principalType": "ServicePrincipal"
+      }
+    },
         {
             "type": "Microsoft.Synapse/workspaces/sqlPools",
             "apiVersion": "2021-06-01",
