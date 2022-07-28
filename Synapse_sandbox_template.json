@@ -2,10 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.1",
     "parameters": {
-        "name": {
+        "Companyname": {
             "type": "string",
-            "minlength": 3,
-            "maxLength": 8 
+            "maxLength": 3 
         },
         "location": {
             "type": "string",
@@ -59,13 +58,14 @@
         "sku": "DW100c",
         "collation": "SQL_Latin1_General_CP1_CI_AS",
         "metadataSync": false,
-        "uniqueSAName": "[concat(parameters('name'),'-', uniqueString(resourceGroup().id))]",
-        "DataLakeStorageFilesystemName": "[concat(parameters('name'),'-fs')]"
+        "name": "[concat(parameters('Companyname'),'ws')]",
+        "uniqueSAName": "[concat(variables('name'),uniqueString(resourceGroup().id))]",
+        "DataLakeStorageFilesystemName": "[concat(variables('name'),'-fs')]"
     },
     "resources": [
         {
             "apiVersion": "2021-06-01-preview",
-            "name": "[parameters('name')]",
+            "name": "[variables('name')]",
             "location": "[parameters('location')]",
             "type": "Microsoft.Synapse/workspaces",
             "identity": {
@@ -89,7 +89,7 @@
                     "condition": "[variables('allowAllConnections')]",
                     "apiVersion": "2021-06-01-preview",
                     "dependsOn": [
-                        "[concat('Microsoft.Synapse/workspaces/', parameters('name'))]"
+                        "[concat('Microsoft.Synapse/workspaces/', variables('name'))]"
                     ],
                     "location": "[parameters('location')]",
                     "name": "allowAll",
@@ -179,11 +179,11 @@
       "name": "[guid(uniqueString(variables('uniqueSAName')))]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[parameters('name')]"
+        "[variables('name')]"
       ],
       "properties": {
         "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', 'ba92f5b4-2d11-453d-a403-e96b0029c9fe')]",
-        "principalId": "[reference(resourceId('Microsoft.Synapse/workspaces', parameters('name')), '2019-06-01-preview', 'Full').identity.principalId]",
+        "principalId": "[reference(resourceId('Microsoft.Synapse/workspaces', variables('name')), '2019-06-01-preview', 'Full').identity.principalId]",
         "principalType": "ServicePrincipal"
       }
     },
@@ -195,7 +195,7 @@
                 "Environment": "Demo",
                 "Project": "Tutorial"
             },
-            "name": "[concat(parameters('name'), '/', parameters('sqlDedicatedPoolName'))]",
+            "name": "[concat(variables('name'), '/', parameters('sqlDedicatedPoolName'))]",
             "sku": {
                 "name": "[variables('sku')]"
             },
@@ -204,14 +204,14 @@
                 "collation": "[variables('collation')]"
             },
             "dependsOn": [
-            "[concat('Microsoft.Synapse/workspaces/', parameters('name'))]"
+            "[concat('Microsoft.Synapse/workspaces/', variables('name'))]"
             ],
             "resources": [
                 {
                     "condition": "[variables('metadataSync')]",
                     "apiVersion": "2021-06-01",
                     "dependsOn": [
-                        "[concat('Microsoft.Synapse/workspaces/', parameters('name'), '/sqlPools/', parameters('sqlDedicatedPoolName'))]"
+                        "[concat('Microsoft.Synapse/workspaces/', variables('name'), '/sqlPools/', parameters('sqlDedicatedPoolName'))]"
                     ],
                     "location": "[parameters('location')]",
                     "name": "config",
