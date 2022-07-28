@@ -47,7 +47,7 @@
         "storageRoleUniqueId": "[Guid(concat(resourceGroup().id),parameters('DataLakeStorageAccountName'))]",
         "isNewStorageAccount": true,
         "isNewFileSystemOnly": false,
-        "managedResourceGroupName": "[concat(resourceGroup().location, '_ManagedRG')]",
+        "managedResourceGroupName": "[concat(resourceGroup().name, '_ManagedRG')]",
         "storageAccessTier": "Hot",
         "storageAccountType": "Standard_RAGRS",
         "storageSupportsHttpsTrafficOnly": "true",
