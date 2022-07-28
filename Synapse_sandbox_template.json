@@ -169,7 +169,7 @@
             }
         },
         {
-            "condition": false,
+            "condition": true,
             "apiVersion": "2019-05-01",
             "name": "StorageRoleDeploymentResource",
             "type": "Microsoft.Resources/deployments",
