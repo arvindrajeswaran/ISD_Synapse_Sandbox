@@ -290,7 +290,7 @@
             "actions": {
               "HTTP": {
                            "runAfter": {
-                                "Initializevariable": [
+                                "Initialize_variable": [
                                     "Succeeded"
                                 ]
                             },
@@ -321,7 +321,7 @@
                                 "uri": "[concat(variables('managementEndpoint'),variables('pausesynapseAPI'))]"
                             }
             },
-            "Initializevariables": {
+            "Initialize_variable": {
               "type": "InitializeVariable",
               "inputs": {
                 "variables": [
@@ -333,7 +333,7 @@
                             "ResourceGroupName": "[resourceGroup().name]",
                             "ScheduleTimeZone": "Eastern Standard Time",
                             "SubscriptionId": "[subscription().subscriptionId]",
-                            "TenantId": "[tenant().tenantId]",
+                            "TenantId": "[subscription().tenantId]",
                             "sqlPoolName": "[concat(variables('name'), '/', variables('sqlDedicatedPoolName'))]",
                             "workspaceName": "[variables('name')]"
                     }
