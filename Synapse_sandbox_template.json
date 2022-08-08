@@ -264,7 +264,7 @@
     //Logic App to Pause the Synapse Workspace
     {
             "type": "Microsoft.Logic/workflows",
-            "apiVersion": "2017-07-01",
+            "apiVersion": "2019-05-01",
             "name": "[variables('logicappname')]",
             "location": "[parameters('location')]",
             "identity": {
@@ -353,7 +353,7 @@
             "apiVersion": "2020-04-01-preview",
             "name": "[variables('roleAssignmentName')]",
             "properties": {
-                "principalId": "[reference(resourceId('Microsoft.Logic/workflows', variables('logicappName')), '2017-07-01', 'full').identity.principalId]",
+                "principalId": "[reference(resourceId('Microsoft.Logic/workflows', variables('logicappName')), '2019-05-01', 'full').identity.principalId]",
                 "roleDefinitionId": "[variables('roleDefinitionId')]",
                 "scope": "[resourceGroup().id]",
                 "principalType": "ServicePrincipal"
