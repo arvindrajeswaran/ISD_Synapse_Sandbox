@@ -307,9 +307,7 @@
                   }
                 ]
               }
-            }
             },
-            "action":{
               "HTTP": {
                            "runAfter": {
                                 "Initialize_variable": [
@@ -343,7 +341,7 @@
                                 "uri": "[concat(variables('managementEndpoint'),variables('pausesynapseAPI'))]"
                             }
             }
-            }
+        }
     }
     }
     },
