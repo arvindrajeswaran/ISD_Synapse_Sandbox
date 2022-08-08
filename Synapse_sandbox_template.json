@@ -70,7 +70,10 @@
         "apachesqlpool": "[toLower(concat(variables('name'),'apspool'))]",
         "logicappname": "[toLower(concat(variables('name'),'pausesqlpool'))]",
         "getsynapseAPI":"subscriptions/@{variables('SynapseVariable')['SubscriptionId']}/resourceGroups/@{variables('SynapseVariable')['ResourceGroupName']}/providers/Microsoft.Synapse/workspaces/@{variables('SynapseVariable')['workspaceName']}/sqlPools/@{variables('SynapseVariable')['sqlPoolName']}?api-version=2019-06-01-preview",
-        "pausesynapseAPI": "subscriptions/@{variables('SynapseVariable')['SubscriptionId']}/resourceGroups/@{variables('SynapseVariable')['ResourceGroupName']}/providers/Microsoft.Synapse/workspaces/@{variables('SynapseVariable')['workspaceName']}/sqlPools/@{variables('SynapseVariable')['sqlPoolName']}/pause?api-version=2019-06-01-preview"
+        "pausesynapseAPI": "subscriptions/@{variables('SynapseVariable')['SubscriptionId']}/resourceGroups/@{variables('SynapseVariable')['ResourceGroupName']}/providers/Microsoft.Synapse/workspaces/@{variables('SynapseVariable')['workspaceName']}/sqlPools/@{variables('SynapseVariable')['sqlPoolName']}/pause?api-version=2019-06-01-preview",
+        "contributor": "b24988ac-6180-42a0-ab88-20f7382dd24c",
+        "roleDefinitionId": "[resourceId('Microsoft.Authorization/roleDefinitions', variables('contributor'))]",
+        "roleAssignmentName": "[guid(variables('logicappName'), resourceGroup().id, variables('roleDefinitionId'))]"
     },
     "resources": [
         {
@@ -343,6 +346,18 @@
             }
     }
     }
+    },
+    //Adding Logic App as contributor to Synapse Workspace and Pool
+    {
+            "type": "Microsoft.Authorization/roleAssignments",
+            "apiVersion": "2020-04-01-preview",
+            "name": "[variables('roleAssignmentName')]",
+            "properties": {
+                "principalId": "[reference(resourceId('Microsoft.Logic/workflows', variables('logicappName')), '2019-05-01', 'full').identity.principalId]",
+                "roleDefinitionId": "[variables('roleDefinitionId')]",
+                "scope": "[resourceGroup().id]",
+                "principalType": "ServicePrincipal"
+            }
     }
     ],
     "outputs": {}
