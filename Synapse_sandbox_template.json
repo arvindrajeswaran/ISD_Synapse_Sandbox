@@ -288,7 +288,7 @@
                         }
                     },
             "actions": {
-            "Initialize_variables": {
+            "Initializevariables": {
               "type": "InitializeVariable",
               "inputs": {
                 "variables": [
@@ -310,7 +310,7 @@
             },
               "HTTP": {
                            "runAfter": {
-                                "Initialize_variable": [
+                                "Initializevariable": [
                                     "Succeeded"
                                 ]
                             },
