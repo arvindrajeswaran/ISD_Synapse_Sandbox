@@ -334,7 +334,7 @@
                             "ScheduleTimeZone": "Eastern Standard Time",
                             "SubscriptionId": "[subscription().subscriptionId]",
                             "TenantId": "[subscription().tenantId]",
-                            "sqlPoolName": "[concat(variables('name'), '/', variables('sqlDedicatedPoolName'))]",
+                            "sqlPoolName": "[variables('sqlDedicatedPoolName')]",
                             "workspaceName": "[variables('name')]"
                     }
                   }
